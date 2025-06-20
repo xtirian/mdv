@@ -52,21 +52,25 @@ import re
 
 def extrair_tipo_contemplacao(texto: str) -> str:
     # Padrão para capturar o tipo (ignora maiúsculas/minúsculas)
-    padrao = r"Tipo\s+Contempl\.?:\s*\|\s*([^\n|]+?)\s*\|"
+    padrao = r"Tipo\s+Contempl\.?:\s*(.*?)(?:\s+[A-Z][a-z]+:|$)"
     match = re.search(padrao, texto, re.IGNORECASE)
     
+   
     if not match:
         return "NÃO CONTEMPLADO"
     
-    tipo = match.group(1).strip().upper()  # Converte para MAIÚSCULAS
+    tipo = match.group(1).strip().upper().split(" VALOR A DEVOLVER")[0].strip()
     
-    # Padroniza "LANCE" (qualquer variação como "lance", "Lance Fixo", etc.)
-    if "LANCE" in tipo:
-        return "LANCE"
-    elif not tipo:  # Campo vazio
+    print(tipo)    
+
+    if not tipo:
         return "---"
+    elif "VALOR A DEVOLVER" in tipo:
+        return "NÃO CONTEMPLADO"
+    elif "LANCE" in tipo:
+        return "LANCE"
     else:
-        return tipo  # Retorna outros tipos como estão (ex: "SORTEIO")
+        return tipo
 
 def extrair_data_hora_segunda_linha(texto: str) -> str:
     linhas = texto.strip().splitlines()
@@ -122,12 +126,8 @@ def extrair_situacao_cobranca(texto: str) -> str:
     match = re.search(padrao, texto)
     return match.group(1).strip() if match else "---"
 
-def extrair_liquido_pagar(texto: str) -> str:
-    # Acha o índice do resumo (início da seção)
-    import re
-
 def extrair_liquido_pagar(texto: str) -> float:
-    padrao = r"(?:L[ií]quido\s+[àa]\s+Pagar:)\s*([\d\.]+,\d{2})"
+    padrao = r"(?:Valor\s+[àa]\s+Devolver:)\s*([\d\.]+,\d{2})"
     match = re.search(padrao, texto, re.IGNORECASE)
     return float(match.group(1).replace(".", "").replace(",", ".")) if match else 0.0
 
