@@ -68,22 +68,21 @@ def export_to_excel():
         ws.auto_filter.ref = f"A1:{get_column_letter(max_col)}{max_row}"
 
         # # Formata colunas monetárias
-        # colunas_monetarias = [
-        #     "Valor Crédito", "Líquido a Pagar", "Saldo Devedor",
-        #     "Val. Disponíveis Encerramento", "Valor Contrib. Mensal"
-        # ]
-        # formato_monetario = u'R$ #,##0.00'
+        colunas_monetarias = [
+            "Valor Crédito", "Líquido a Pagar", "Saldo Devedor",
+            "Val. Disponíveis Encerramento", "Valor Contrib. Mensal"
+        ]        
 
-        # for col_idx, col_name in enumerate(df.columns, 1):
-        #     if col_name in colunas_monetarias:
-        #         for row in range(2, max_row + 1):  # começa na linha 2 (dados)
-        #             cell = ws.cell(row=row, column=col_idx)
-        #             try:
-        #                 valor = float(str(cell.value).replace("R$", "").replace(".", "").replace(",", "."))
-        #                 cell.value = valor
-        #                 cell.number_format = formato_monetario
-        #             except:
-        #                 pass  # ignora se não for número
+        for col_idx, col_name in enumerate(df.columns, 1):
+            if col_name in colunas_monetarias:
+                 for row in range(2, max_row + 1):  # começa na linha 2 (dados)
+                     cell = ws.cell(row=row, column=col_idx)
+                     try:
+                         valor = float(str(cell.value))
+                         cell.value = valor
+                         cell.number_format = '"R$"#,##0.00'  
+                     except:
+                         pass  # ignora se não for número
 
         for col_idx, col in enumerate(ws.iter_cols(min_row=1, max_row=max_row), 1):
             max_length = 0

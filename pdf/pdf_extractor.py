@@ -60,7 +60,7 @@ def extrair_tipo_contemplacao(texto: str) -> str:
         return "NÃO CONTEMPLADO"
     
     tipo = match.group(1).strip().upper().split(" VALOR A DEVOLVER")[0].strip()
-    
+   
     print(tipo)    
 
     if not tipo:
